@@ -69,7 +69,6 @@ df = df.reset_index(drop=True)  # 重置索引
 df['序号'] = df.index + 1  # 将索引值加1作为序号列
 df['姓名'] = df['工作人员姓名']
 merged_df = df[['序号', '姓名', '参加工作时间', '假期类别', '上一年剩余年假', '今年可休年假总天数']].copy()
-merged_df.to_excel('/home/sf107/桌面/111111111111111111111111111111111.xlsx', index=False)
 
 
 # merged_df = pd.merge(df, df_r[['工作人员姓名', '上一年剩余年假', '今年可休年假总天数']], left_on='姓名', right_on='工作人员姓名', how='left')
