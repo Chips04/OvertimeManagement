@@ -176,7 +176,6 @@ df3.loc[df3['请假开始时段（网格）'].notnull(), '请假开始时段'] =
 df3.loc[df3['请假结束时段（网格）'].notnull(), '请假结束时段'] = df3['请假结束时段（网格）']
 df3['请假开始时段'] = df3['请假开始时段'].replace({'前半天': '上午', '后半天': '下午'})
 df3['请假结束时段'] = df3['请假结束时段'].replace({'前半天': '上午', '后半天': '下午'})
-df3.to_excel('/home/sf107/桌面/333333333.xlsx', index=False)
 
 df3['调休时间list'] = pd.Series([[] for _ in range(len(df3))], dtype=object)
 
@@ -409,7 +408,6 @@ df7['序号'] = range(1, len(df7) + 1)
 df7['1'] = df7['姓名'].map(df2.set_index('姓名')['所属部门'])
 print(df2.columns)
 print(df7.columns)
-df7.to_excel('/home/sf107/桌面/67856575698699.xlsx', index=False)
 # # 填充数据 大表
 b9 = 4
 for i9 in range(len(df7)):
