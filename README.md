@@ -6,7 +6,7 @@
 
 sudo apt install python3-pip
 
-pip install openpyxl pandas numpy
+pip install openpyxl pandas
 
 sudo apt update
 
