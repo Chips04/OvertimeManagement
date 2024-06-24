@@ -801,8 +801,6 @@ ws_origin5.cell(1, 1, value=f"民治街道上芬社区{current_year}年{current_
 ws_origin6.cell(1, 1, value=f"民治街道上芬社区{current_year}年{current_month}月加班审批表")
 
 # 将工作簿保存为 Excel 文件
-wb.save(path + "没用/处理完成2.xlsx")
-wb_temp.save(path + "没用/result_temp.xlsx")
 wb_origin.save(f"{path}处理结果/原来的加班费审批表{current_month}月.xlsx")  # ！！！
 wb_origin2.save(f"{path}处理结果/（新模板）{current_year}年{current_month}月加班日志汇总表.xlsx")  # ！！！
 wb_origin3.save(f"{path}处理结果/单日加班超4小时申请汇总表.xlsx")  # ！！！
