@@ -433,9 +433,6 @@ for name in unique_names:
 
 wb_origin7.remove(wb_origin7['模板'])
 # 将工作簿保存为 Excel 文件
-wb.save(path + "没用/处理完成2.xlsx")
-wb1.save(path + "没用/result.xlsx")
-wb_temp.save(path + "没用/result_temp.xlsx")
 
 wb_origin7.save(f"{path}处理结果/附件6：补休情况登记表-全.xlsx")  # ！！！
 wb_origin8 = openpyxl.load_workbook(path + '处理结果/附件6：补休情况登记表-全.xlsx')  # ！！！
