@@ -151,9 +151,9 @@ unique_listNew = unique_list if unique_list.index(lastGroup) == 15 else list2 + 
 print(unique_listNew)
 
 
-df8.to_excel('/home/sf107/桌面/55555555555.xlsx', index=False)
+# df8.to_excel('/home/sf107/桌面/55555555555.xlsx', index=False)
 df9 = df8.drop_duplicates(subset='值班人员')
-df9.to_excel('/home/sf107/桌面/777.xlsx', index=False)
+# df9.to_excel('/home/sf107/桌面/777.xlsx', index=False)
 len1 = len(df8) - len(df9)
 print(len1)
 # 使用 pd.concat 和列表推导式来重复 df 10 次
@@ -173,7 +173,7 @@ for index, row in df10.iterrows():
     df10.at[index, '值班日期日期格式'] = lastDate
     df10.at[index, '交班日期'] = lastDate + timedelta(days=1)
     df10.at[index, '值班日期'] = lastDate.strftime('%Y-%m-%d')
-df10.to_excel('/home/sf107/桌面/666.xlsx', index=False)
+# df10.to_excel('/home/sf107/桌面/666.xlsx', index=False)
 df_combined = pd.concat([df8, df10], ignore_index=True)
 df_combined = df_combined.drop(columns=['星期'])
 merged = pd.merge(df_combined, df11[['日期', '星期']], left_on='值班日期日期格式', right_on='日期', how='left', suffixes=('', '_update'))
