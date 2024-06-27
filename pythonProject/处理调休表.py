@@ -23,9 +23,6 @@ except json.JSONDecodeError as e:
 path = data['path']
 month = data['month']
 year = data['year']
-# path = "/home/sf107/桌面/加班表格处理/"
-# month = 5
-# year = 2024
 
 
 # 调休表需要导出所有日期加班和所有请休假
@@ -52,8 +49,10 @@ if matches:
     df1 = pd.read_excel(matches[0])
 else:
     print('No matching files found.')
-
-month_str = '2024.05'
+if month < 10:
+    month_str = "2024.0" + str(month)
+else:
+    month_str = "2024." + str(month)
 # 获得年月
 max_value = df1['加班日期'].max()
 current_year = max_value.year
@@ -386,22 +385,10 @@ for index_final, row_final in result.iterrows():
         # 这一行代码费我好大劲，纪念！
         df4.iat[indices, 1] = later_list
 
-    df7 = df7._append(newRow1, ignore_index=True)
+    df7 = df7.append(newRow1, ignore_index=True)
 
 # 数组要是有不为空的 那就是假请多了↓
 print(df4)
-
-# 创建一个新的工作簿
-wb = Workbook()
-sheet = wb.active
-wb1 = Workbook()
-sheet1 = wb1.active
-wb_temp = Workbook()
-sheet_temp = wb_temp.active
-
-
-for r1 in dataframe_to_rows(result, index=False, header=True):
-    sheet1.append(r1)
 
 # ******************************7.补休情况登记表************************************
 df7['序号'] = range(1, len(df7) + 1)
@@ -490,8 +477,6 @@ for sheet in wb_origin8.worksheets:
         sheet.cell(1, 1, value=f"民治街道上芬社区{current_year}年{month}月补休情况登记表")
 
 # 大表
-month = 5
-month_str = '2024.05'
 # 遍历所有工作表
 # print(f"正在处理工作表: {sheet.title}")
 flag = 0

@@ -17,6 +17,7 @@ except json.JSONDecodeError as e:
 
 # 从字典中提取变量
 directory = data['path']
+group = data['group']
 
 # 获取数据源dataframe
 df_r = pd.DataFrame()
@@ -53,24 +54,20 @@ else:
 wb_origin8 = openpyxl.load_workbook(directory + '模板/年假统计表模板.xlsx')  # ！！！
 ws_origin8 = wb_origin8['2024']
 
-
-
-# 综合组
-df = df_r[df_r['加班费组别（加班费使用）'] == '综合组'].copy()
+# 选组
+df = df_r[df_r['加班费组别（加班费使用）'] == group].copy()
 # df = df_r.copy()
 
-df['参加工作时间'] = df['入职时间'].apply(lambda x: f"{x.year}.{x.strftime('%m')}")
+df['参加工作时间'] = df['入职时间'].apply(lambda x: f"{x.year}.{x.strftime('%m')}" if pd.notnull(x) else None)
 # df['参加工作时间'] = df['入职时间'].apply(lambda x: f'{x.year}.{x.month:02d}')
 df['假期类别'] = '年假'
-names_to_remove = ['陈学荣', '李四', '王五']
+names_to_remove = ['陈学荣', '苏伟如', '戴南真', '王大森']
 mask = ~df['工作人员姓名'].isin(names_to_remove)
 df = df[mask]
 df = df.reset_index(drop=True)  # 重置索引
 df['序号'] = df.index + 1  # 将索引值加1作为序号列
 df['姓名'] = df['工作人员姓名']
 merged_df = df[['序号', '姓名', '参加工作时间', '假期类别', '上一年剩余年假', '今年可休年假总天数']].copy()
-
-
 # merged_df = pd.merge(df, df_r[['工作人员姓名', '上一年剩余年假', '今年可休年假总天数']], left_on='姓名', right_on='工作人员姓名', how='left')
 
 merged_df['2023剩余'] = merged_df['上一年剩余年假']

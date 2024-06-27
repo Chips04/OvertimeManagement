@@ -1,25 +1,25 @@
 import pandas as pd
 from datetime import datetime
 from datetime import timedelta
-from 已完成.functions import *
+from functions import *
 import re
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 
 filename5 = '/home/sf107/桌面/值班安排表处理/工作日周末法定节假日表_20240401151558.xlsx'
-filename = '/home/sf107/桌面/值班安排表处理/上芬社区应急值班安排表2024年6月份  .xlsx'
+filename = '/home/sf107/桌面/值班安排表处理/上芬社区应急值班安排表2024年7月份  .xlsx'
 output_name = '/home/sf107/桌面/值班安排表处理/值班安排表输出表格.xlsx'
 output_name2 = '/home/sf107/桌面/值班安排表处理/值班安排表有值班领导输出表格.xlsx'
 df = pd.read_excel(filename, skiprows=1)
 df5 = pd.read_excel(filename5)
+df11 = df5.copy()
 # 只保留节假日值班的行
 df5 = df5[df5['值班（节假日）'] == '节假日值班']
 leader_arr = ['徐军', '田普洲', '何欢', '肖志强', '李超结', '郭亚飞', '龙倩琪', '刘波哲', '陈学荣', '王雄', '苏伟如', '戴南真', '马贵鑫', '詹国香', '罗有杰', '万成兵']
 repeated_list = [x for i in range(len(df5)) for x in leader_arr]
 
 df5['值班领导'] = repeated_list[:len(df5)]
-print(df5)
 year = filename.split("年")[0].split("值班安排表")[-1].strip()
 
 # 获取最后一行第一列的值
@@ -116,15 +116,71 @@ for index, row in df2.iterrows():
             ],
             index=df2.columns
         )
-        df2 = df2._append(newRow2, ignore_index=True)
+        df2 = df2.append(newRow2, ignore_index=True)
 df2 = df2.sort_values(by='值班日期')
 df6 = df2
 df6 = df6.rename(columns={'值班组员': '值班人员', '电话': '手机'})
-df6 = df6.drop_duplicates(subset='值班人员')
+# df6 = df6.drop_duplicates(subset='值班人员')
 df6['职务'] = df6.apply(lambda row: '值班领导' if row['值班领导'] == row['值班人员'] else '值班组员', axis=1)
 df6['手机文本格式'] = df6['手机'].map(int).astype(str)
 df6['签到情况'] = '未签到'
 df6['星期'] = ''
+df8 = df6
+df8['交班日期'] = df8['值班日期日期格式'] + pd.DateOffset(days=1)
+# 原输出表最后一行
+lastGroup = df8.at[df.__len__() - 1, '值班组名']  # 原表最后一个值班组
+lastDate = df8.at[df.__len__() - 1, '值班日期日期格式']  # 原表最后一个值班日期日期格式
+print(lastGroup)
+print(lastDate)
+# 确定组名第一个的排序
+groupsSeries = df8['值班组名']
+groupsSeries = groupsSeries.dropna()  # 去掉空值
+groupsArr = groupsSeries.tolist()
+print(groupsArr)
+# 正确的使用方式是
+unique_list = []
+for x in groupsArr:
+    if x not in unique_list:
+        unique_list.append(x)
+print(unique_list)  # 输出 [1, 2, 3, 4, 5]
+
+# 处理list排序
+list1 = unique_list[:unique_list.index(lastGroup) + 1]
+list2 = unique_list[-(len(unique_list) - unique_list.index(lastGroup) - 1):]
+unique_listNew = unique_list if unique_list.index(lastGroup) == 15 else list2 + list1
+print(unique_listNew)
+
+
+df8.to_excel('/home/sf107/桌面/55555555555.xlsx', index=False)
+df9 = df8.drop_duplicates(subset='值班人员')
+df9.to_excel('/home/sf107/桌面/777.xlsx', index=False)
+len1 = len(df8) - len(df9)
+print(len1)
+# 使用 pd.concat 和列表推导式来重复 df 10 次
+df_list = [df9 for _ in range(35)]
+df10 = pd.concat(df_list, ignore_index=True)
+
+# 现在 df2 包含 1000 行数据，是 df 的 10 倍
+df10 = df10.iloc[len1:]
+# lastDate
+groupName2 = lastGroup
+for index, row in df10.iterrows():
+    if row['值班组名'] == groupName2:
+        pass
+    else:
+        groupName2 = row['值班组名']
+        lastDate = lastDate + timedelta(days=1)
+    df10.at[index, '值班日期日期格式'] = lastDate
+    df10.at[index, '交班日期'] = lastDate + timedelta(days=1)
+    df10.at[index, '值班日期'] = lastDate.strftime('%Y-%m-%d')
+df10.to_excel('/home/sf107/桌面/666.xlsx', index=False)
+df_combined = pd.concat([df8, df10], ignore_index=True)
+df_combined = df_combined.drop(columns=['星期'])
+merged = pd.merge(df_combined, df11[['日期', '星期']], left_on='值班日期日期格式', right_on='日期', how='left', suffixes=('', '_update'))
+merged = merged.drop(columns=['日期'])
+merged.to_excel('/home/sf107/桌面/值班安排表处理/值班明细表111.xlsx', index=False)
+rn2('/home/sf107/桌面/值班安排表处理/值班明细表111.xlsx', '/home/sf107/桌面/值班安排表处理/值班明细表111.xlsx', ['A'])  # ！！！！！！！
+# merged.to_excel('/home/sf107/桌面/888.xlsx', index=False)
 df7 = pd.DataFrame(columns=df6.columns)
 for index2, row2 in df5.iterrows():
     for index3, row3 in df6.iterrows():
