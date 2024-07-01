@@ -45,7 +45,7 @@ for i1 in range(today.month):
     wb_origin = openpyxl.load_workbook('/home/sf107/桌面/2生活垃圾产生量记录表/模板/生活垃圾产生量xx月份记录表.xlsx')
     ws_origin = wb_origin.active
     # 结果的表格
-    columns = ['电池', '灯管', '玻璃', '金属', '塑料', '纸类', '（千克）', '（千克）', '（千克）', '（660升桶）']
+    columns = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     df_final = pd.DataFrame(columns=columns)
     if i1 == today.month - 1:
         days_in_month = today.day - 1
@@ -67,7 +67,7 @@ for i1 in range(today.month):
             ],
             index=columns
         )
-        df_final = df_final._append(newRow1, ignore_index=True)
+        df_final = df_final.append(newRow1, ignore_index=True)
     # 填充数据
     BBB = 7
     for i2 in range(len(df_final)):
