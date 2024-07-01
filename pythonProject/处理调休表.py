@@ -392,7 +392,7 @@ print(df4)
 
 # ******************************7.补休情况登记表************************************
 df7['序号'] = range(1, len(df7) + 1)
-df7['1'] = df7['姓名'].map(df2.set_index('姓名')['所属部门'])
+df7['1'] = df7['姓名'].map(df2.set_index('姓名')['加班费组别（加班费使用）'])
 print(df2.columns)
 print(df7.columns)
 # # 填充数据 大表
@@ -401,8 +401,9 @@ for i9 in range(len(df7)):
     for j9 in range(len(df7.columns)):
         cell_value4 = df7.iat[i9, j9]
         ws_origin9.cell(i9 + b9, j9 + 1, value=cell_value4)
+# 删除组那一列
+df7 = df7.drop('1', axis=1)
 # 输不输出大表
-# wb_origin9.save(f"{path}处理结果/附件6：补休情况登记表-大表-全.xlsx")  # ！！！
 unique_names = list(dict.fromkeys(df7['姓名']))
 print(unique_names)
 for name in unique_names:
