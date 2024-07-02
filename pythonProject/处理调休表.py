@@ -9,7 +9,7 @@ import json
 import subprocess
 
 # 读取txt文件内容
-with open('variables.txt', 'r') as file:
+with open('variables.txt', 'r', encoding='utf-8') as file:
     content = file.read().strip()
 
 # 尝试将内容转换为字典，注意这里假设了txt文件的内容是合法的JSON格式
