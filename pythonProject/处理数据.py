@@ -11,8 +11,13 @@ import subprocess
 import argparse
 
 # 读取txt文件内容
-with open('variables.txt', 'r', encoding='utf-8') as file:
-    content = file.read().strip()
+# 读取文件内容，并手动处理可能的 UTF-8 BOM
+with open('variables.txt', 'rb') as file:  # 使用二进制模式打开文件
+    content = file.read()
+    # 检查并去除 UTF-8 BOM（如果有的话）
+    if content.startswith(b'\xef\xbb\xbf'):
+        content = content[3:]  # 跳过 BOM
+    content = content.decode('utf-8').strip()  # 解码为 UTF-8 并去除空白字符
 
 # 尝试将内容转换为字典，注意这里假设了txt文件的内容是合法的JSON格式
 try:
