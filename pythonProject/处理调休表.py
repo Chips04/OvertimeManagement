@@ -28,6 +28,7 @@ except json.JSONDecodeError as e:
 path = data['path']
 month = data['month']
 year = data['year']
+group = data['group']
 
 
 # 调休表需要导出所有日期加班和所有请休假
@@ -389,8 +390,11 @@ for index_final, row_final in result.iterrows():
         indices = df4[df4['申请人员姓名'] == row_final['姓名']].index[0]
         # 这一行代码费我好大劲，纪念！
         df4.iat[indices, 1] = later_list
+    if group == '网格组':
+        df7 = df7._append(newRow1, ignore_index=True)
+    else:
+        df7 = df7.append(newRow1, ignore_index=True)
 
-    df7 = df7.append(newRow1, ignore_index=True)
 
 # 数组要是有不为空的 那就是假请多了↓
 print(df4)
