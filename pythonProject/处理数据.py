@@ -87,6 +87,23 @@ if matches2:
 else:
     print('No matching files found2.')
 
+# 获取数据源dataframe
+df14 = pd.DataFrame()
+
+pattern14 = '花名册_各种版本*.xlsx'
+# 获取匹配的文件列表
+matches14 = []
+for filename14 in os.listdir(directory):
+    if fnmatch.fnmatch(filename14, pattern14):
+        matches14.append(os.path.join(directory, filename14))
+
+# 打开第一个匹配的文件并读取内容
+if matches14:
+    df14 = pd.read_excel(matches14[0])
+else:
+    print('No matching files found14.')
+
+# print(df14)
 
 # 获取数据源dataframe
 df3 = pd.DataFrame()
@@ -105,7 +122,8 @@ else:
     print('No matching files found.')
 
 
-df2 = df2.rename(columns={'工作人员姓名': '姓名', '人员类别（加班费使用）': '人员类别', '学历（加班费使用）': '学历'})
+# df2 = df2.rename(columns={'工作人员姓名': '姓名', '人员类别（加班费使用）': '人员类别', '学历（加班费使用）': '学历'})
+df14 = df14.rename(columns={'工作人员姓名': '姓名', '人员类别（加班费使用）': '人员类别', '学历（加班费使用）': '学历'})
 
 
 # 获得年月
@@ -127,7 +145,23 @@ if '初核意见' in df1.columns:
     df1 = df1[df1['初初核意见'] != '不同意']
 
 # 合并df1和df2
-merged_df1_2 = pd.merge(df1, df2, on='姓名', how='left')
+# 确保加班日期是datetime类型
+df1['加班日期'] = pd.to_datetime(df1['加班日期'])
+
+# 为 df1 和 df14 分别添加新的列，只包含年月的部分
+df1['加班日期_年月'] = df1['加班日期'].dt.to_period('M')
+df14['名单生效年月_年月'] = df14['名单生效年月'].dt.to_period('M')
+
+# 使用新添加的列进行合并
+merged_df1_2 = pd.merge(df1, df14,
+                        left_on=['姓名', '加班日期_年月'],
+                        right_on=['姓名', '名单生效年月_年月'],
+                        how='left')
+
+# 如果您不再需要额外的年月列，可以在合并后删除它们
+merged_df1_2.drop(['加班日期_年月', '名单生效年月_年月'], axis=1, inplace=True)
+
+# merged_df1_2 = pd.merge(df1, df14, on='姓名', how='left')
 print(merged_df1_2)
 print(df_salary)
 print(merged_df1_2.columns)
