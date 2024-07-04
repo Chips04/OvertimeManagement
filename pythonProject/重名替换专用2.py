@@ -1,4 +1,4 @@
-from 已完成.functions import *
+from functions import *
 import json
 
 # 替换重名
