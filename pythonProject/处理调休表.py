@@ -128,7 +128,26 @@ df2 = df2.rename(columns={'工作人员姓名': '姓名'})
 result = pd.merge(df1, df2, on='姓名', how='left')
 
 # 排序
-result = result.sort_values(by=['编号', '加班开始时间'], ascending=[True, True])
+# result = result.sort_values(by=['编号', '加班开始时间'], ascending=[True, True])
+
+
+# 定义一个函数来确定排序值
+def sort_key(row_r):
+    if pd.notnull(row_r['调休顺序日期']):
+        return row_r['调休顺序日期']
+    else:
+        return row_r['加班开始时间']
+
+
+# 应用该函数来创建一个新的排序列
+result['sort_key'] = result.apply(sort_key, axis=1)
+print(result)
+
+# 根据新的排序列进行排序
+result = result.sort_values(by='sort_key', ascending=True)
+
+# 如果不再需要，可以删除排序列
+result = result.drop(columns='sort_key')
 
 result = result.reset_index(drop=True)
 
