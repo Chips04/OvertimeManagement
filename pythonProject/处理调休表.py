@@ -439,7 +439,8 @@ for name in unique_names:
     copied_worksheet.title = name
     # 填充数据 补休情况登记表
     b7 = 4
-    df_new = df7[df7['姓名'] == name]
+    df_new = df7[df7['姓名'] == name].copy()
+    df_new['序号'] = range(1, len(df_new) + 1)
     for i7 in range(len(df_new)):
         copied_worksheet.cell(i7 + b7, 1, value=i7 + 1)
         for j7 in range(len(df_new.columns)):
