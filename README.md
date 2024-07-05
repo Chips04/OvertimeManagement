@@ -28,6 +28,10 @@ git clone https://github.com/Chips04/OvertimeManagement.git
 
 git pull origin main
 
+**忽略文件**
+
+git rm --cached pythonProject/variables.txt
+
 **备注**
 
 ①处理数据.py
