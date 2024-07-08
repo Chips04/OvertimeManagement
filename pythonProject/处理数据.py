@@ -133,10 +133,10 @@ current_month = max_value.month
 
 # 只保留报加班费的行
 df_log = df1
-print(len(df_log))
+# print(len(df_log))
 # df1 = df1[df1['报加班费还是给调休'] == '报加班费']
 df1 = df1[df1['报加班费还是给调休'].str.contains('加班费')]
-print(len(df1))
+# print(len(df1))
 
 # 删除不同意的行
 if '初核意见' in df1.columns:
@@ -162,10 +162,10 @@ merged_df1_2 = pd.merge(df1, df14,
 merged_df1_2.drop(['加班日期_年月', '名单生效年月_年月'], axis=1, inplace=True)
 
 # merged_df1_2 = pd.merge(df1, df14, on='姓名', how='left')
-print(merged_df1_2)
-print(df_salary)
-print(merged_df1_2.columns)
-print(df_salary.columns)
+# print(merged_df1_2)
+# print(df_salary)
+# print(merged_df1_2.columns)
+# print(df_salary.columns)
 
 # 合并merged_df1_2和df3
 result = pd.merge(merged_df1_2, df_salary, on='学历', how='left')
@@ -477,11 +477,11 @@ for k in range(len(dff)):
 # 删除值班的行
 df20 = df_log
 # df20 = df_log[df_log['加班类别'] != '按上级规定需要安排值守的，以及办事处安排的应急值守、安全生产巡查值班、社会治安巡逻督察的，另行制定定额标准执行。']
-print(df20)
-print(len(df20))
-print(len(df_log))
-print(len(df1))
-print('@@@@@@@@@@@@@@@@@@@@@@@@@')
+# print(df20)
+# print(len(df20))
+# print(len(df_log))
+# print(len(df1))
+# print('@@@@@@@@@@@@@@@@@@@@@@@@@')
 abc = '按上级规定需要安排值守的，以及办事处安排的应急值守、安全生产巡查值班、社会治安巡逻督察的，另行制定定额标准执行。'
 if len(df20) > 0:
     df20['是否应急值班'] = df20.apply(lambda row:
@@ -500,9 +500,9 @@ if len(df20) > 0:
     df22 = df20.groupby(['加班日期', '加班类型', '加班类别', '具体事由', '是否应急值班', '调休或加班费']).size().reset_index(name='人数')
 
     df23 = df20.groupby(['加班日期',  '加班类型', '加班类别', '具体事由', '是否应急值班', '调休或加班费'])['姓名'].agg('、'.join).reset_index()
-    print(df23)
-    print(5555555555555555555556)
-    print(df22)
+    # print(df23)
+    # print(5555555555555555555556)
+    # print(df22)
     sorted_result1 = df22.sort_values(by='加班日期')
     sorted_result2 = df23.sort_values(by='加班日期')
     # merged_df = pd.merge(df22, df23[['姓名', '加班日期', '具体事由']], on=['加班日期', '具体事由'])
@@ -612,7 +612,7 @@ df42 = df41.sort_values('加班费申报表顺序', ascending=True).reset_index(
 df42 = df42.drop(['index', '加班费申报表顺序'], axis=1)
 
 
-print(df42['加班费金额'])
+# print(df42['加班费金额'])
 df42 = df42.reindex(columns=["人员类别", "姓名", "加班类型", "加班计算小时数", '加班费金额', '审批人（加班费使用）'])
 num44 = -1
 last_name = ""

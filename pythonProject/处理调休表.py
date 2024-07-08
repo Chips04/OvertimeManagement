@@ -416,13 +416,13 @@ for index_final, row_final in result.iterrows():
 
 
 # 数组要是有不为空的 那就是假请多了↓
-print(df4)
+# print(df4)
 
 # ******************************7.补休情况登记表************************************
 df7['序号'] = range(1, len(df7) + 1)
 df7['1'] = df7['姓名'].map(df2.set_index('姓名')['加班费组别（加班费使用）'])
-print(df2.columns)
-print(df7.columns)
+# print(df2.columns)
+# print(df7.columns)
 # # 填充数据 大表
 b9 = 4
 for i9 in range(len(df7)):
@@ -433,7 +433,7 @@ for i9 in range(len(df7)):
 df7 = df7.drop('1', axis=1)
 # 输不输出大表
 unique_names = list(dict.fromkeys(df7['姓名']))
-print(unique_names)
+# print(unique_names)
 for name in unique_names:
     copied_worksheet = wb_origin7.copy_worksheet(wb_origin7['模板'])
     copied_worksheet.title = name
@@ -554,7 +554,7 @@ for j in range(4,last_row2 - 1):
         # print(cell_value)
         sheet2['D' + str(j)] = None
     sheet2['A'+str(j)] = j - 3
-print(month)
+# print(month)
 sheet2.cell(1, 1, value=f"民治街道上芬社区{current_year}年{month}月补休情况登记表")
 
 # 初始化变量
@@ -593,7 +593,7 @@ if current_name is not None:
 
 # 获取工作表的最后一行
 max_row = sheet2.max_row
-print(max_row)
+# print(max_row)
 
 # 从第 4 行遍历到倒数第 3 行
 for row in range(4, max_row - 1):  # 减 2 是因为我们要到倒数第 3 行

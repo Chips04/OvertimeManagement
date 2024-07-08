@@ -104,7 +104,7 @@ merged_df.insert(loc=merged_df.columns.get_loc('可休假总天数') + 1, column
 df3 = df3[df3['休假类别'] == '年休假']
 df3 = df3.sort_values(by=['申请人员姓名', '请假开始日期', '请假开始时段'])
 df3 = df3.reset_index(drop=True)
-print(df3)
+# print(df3)
 merged_df = merged_df.rename(
     columns={merged_df.columns[4]: '休假1', merged_df.columns[5]: '休假2', merged_df.columns[6]: '休假3', merged_df.columns[7]: '休假4',
              merged_df.columns[8]: '休假5', merged_df.columns[9]: '休假6', merged_df.columns[10]: '休假7',
@@ -118,7 +118,7 @@ for index, row in df3.iterrows():
     rows_name = merged_df[merged_df['姓名'] == row['申请人员姓名']]
 
     if not rows_name.empty:
-        print(rows_name)
+        # print(rows_name)
         # 获取第一行的索引
         first_row_index = rows_name.index[0]
         for i in range(10):
