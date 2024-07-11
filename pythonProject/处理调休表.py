@@ -141,7 +141,7 @@ def sort_key(row_r):
 
 # 应用该函数来创建一个新的排序列
 result['sort_key'] = result.apply(sort_key, axis=1)
-print(result)
+# print(result)
 
 # 根据新的排序列进行排序
 result = result.sort_values(by='sort_key', ascending=True)
