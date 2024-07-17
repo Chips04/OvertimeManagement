@@ -554,8 +554,8 @@ if len(df20) > 0:
         else:
             count2 += 1
             people_num += merged_df.iat[k2, 6]
-ws_origin2['A100'] = "加班总人数：" + str(len(df20['姓名'].unique()))
-ws_origin2['H100'] = "申报加班费总时长：" + str(df20[df20['报加班费还是给调休'].str.contains('加班费')]['加班计算小时数'].sum())
+ws_origin2['A200'] = "加班总人数：" + str(len(df20['姓名'].unique()))
+ws_origin2['H200'] = "申报加班费总时长：" + str(df20[df20['报加班费还是给调休'].str.contains('加班费')]['加班计算小时数'].sum())
 
 # ******************************3.单日加班超4小时申请汇总表************************************
 df300 = handel_df_final(3, 'E', 0)
