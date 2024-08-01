@@ -6,9 +6,10 @@ import re
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+import numpy as np
 
 filename5 = '/home/sf107/桌面/值班安排表处理/工作日周末法定节假日表_20240401151558.xlsx'
-filename = '/home/sf107/桌面/值班安排表处理/上芬社区应急值班安排表2024年7月份  .xlsx'
+filename = '/home/sf107/桌面/值班安排表处理/上芬社区应急值班表8月份（最新表格）.xlsx'
 output_name = '/home/sf107/桌面/值班安排表处理/值班安排表输出表格.xlsx'
 output_name2 = '/home/sf107/桌面/值班安排表处理/值班安排表有值班领导输出表格.xlsx'
 df = pd.read_excel(filename, skiprows=1)
@@ -29,6 +30,8 @@ last_row_first_column_value = df.iloc[-1]['序号']
 if not last_row_first_column_value.isdigit():
     # 如果不是数字字符串，则删除最后一行
     df = df.drop(df.index[-1])
+df = df[~df['值班人员'].isin([np.nan, ''])]
+
 
 # 定义一个函数来替换字符串中的空格，同时保持 None 或 NaN 不变
 def replace_spaces(cell):
@@ -87,17 +90,49 @@ for _, row in df.iterrows():
 
 # 将新行转换为DataFrame
 df = pd.DataFrame(new_rows)
+num = 1
 df['值班组名'] = df['值班领导'] + '组'
-
+arr1 = []
+arr4 = []
+first_leader = df.loc[0, '值班领导']
+arr1.append(first_leader)
+arr4.append(first_leader)
+last_leader = ''
+arr3 = [1, 3, 5, 7, 8, 10, 12]
+last_row_leader = df.iloc[-1, df.columns.get_loc('值班领导')]
+# 初始化一个字典来跟踪每个领导的计数
+leader_counts = {}
+for index1, row1 in df.iterrows():
+    if index1 == 0:
+        pass
+    elif last_leader != row1['值班领导']:
+        arr4.append(row1['值班领导'])
+        if row1['值班领导'] not in arr1:
+            arr1.append(row1['值班领导'])
+        else:
+            num = 2
+    else:
+        last_leader = row1['值班领导']
+    last_leader = row1['值班领导']
+    if arr4.count(row1['值班领导']) == 3:
+        num = 1
+    df.loc[index1, '值班组名'] = row1['值班领导'] + '组' + str(num)
+print('======================================')
+print('arr1', arr1)
+print('arr4', arr4)
+# df['值班组名'] = df['值班领导'] + '组'
 df['日'] = df['日'].astype(str).str.replace('\n', '')
 df['值班日期日期格式'] = pd.to_datetime('2024-' + df['月'].astype(str) + '-' + df['日'].astype(str))
 df['值班日期'] = df['值班日期日期格式'].dt.strftime('%Y-%m-%d')
+month = value = df.loc[0, '月']
 df = df.drop(columns=['序号', '职务', '月', '日'])
 df = df.sort_values(by='值班日期')
 # 使用 pd.to_numeric 将文本列转换为整数
 df['值班领导电话'] = pd.to_numeric(df['值班领导电话'])
-df2 = df
-# df2.to_excel(('/home/sf107/桌面/test.xlsx'), index=False)
+df2 = df.copy()
+
+
+
 groupName = ''
 for index, row in df2.iterrows():
     if row['值班组名'] != groupName:
@@ -118,20 +153,24 @@ for index, row in df2.iterrows():
         )
         df2 = df2.append(newRow2, ignore_index=True)
 df2 = df2.sort_values(by='值班日期')
-df6 = df2
+df6 = df2.copy()
+df66 = df6[df6['值班日期日期格式'].dt.day != 31]
+
 df6 = df6.rename(columns={'值班组员': '值班人员', '电话': '手机'})
 # df6 = df6.drop_duplicates(subset='值班人员')
 df6['职务'] = df6.apply(lambda row: '值班领导' if row['值班领导'] == row['值班人员'] else '值班组员', axis=1)
 df6['手机文本格式'] = df6['手机'].map(int).astype(str)
 df6['签到情况'] = '未签到'
 df6['星期'] = ''
-df8 = df6
+df8 = df6.copy()
 df8['交班日期'] = df8['值班日期日期格式'] + pd.DateOffset(days=1)
+df66.to_excel('/home/sf107/桌面/df66.xlsx', index=False)
+df6.to_excel('/home/sf107/桌面/df6.xlsx', index=False)
 # 原输出表最后一行
-lastGroup = df8.at[df.__len__() - 1, '值班组名']  # 原表最后一个值班组
-lastDate = df8.at[df.__len__() - 1, '值班日期日期格式']  # 原表最后一个值班日期日期格式
-print(lastGroup)
-print(lastDate)
+lastGroup = df8.at[df6.__len__() - 1, '值班组名']  # 原表最后一个值班组
+lastDate = df8.at[df6.__len__() - 1, '值班日期日期格式']  # 原表最后一个值班日期日期格式
+print('lastGroup', lastGroup)
+print('lastDate', lastDate)
 # 确定组名第一个的排序
 groupsSeries = df8['值班组名']
 groupsSeries = groupsSeries.dropna()  # 去掉空值
@@ -152,7 +191,10 @@ print(unique_listNew)
 
 
 # df8.to_excel('/home/sf107/桌面/55555555555.xlsx', index=False)
-df9 = df8.drop_duplicates(subset='值班人员')
+# df9 = df8.drop_duplicates(subset='值班人员')
+df9 = df8.drop_duplicates(subset=['值班人员', '值班组名'], keep='first')
+df8.to_excel('/home/sf107/桌面/df8.xlsx', index=False)
+df9.to_excel('/home/sf107/桌面/df9.xlsx', index=False)
 # df9.to_excel('/home/sf107/桌面/777.xlsx', index=False)
 len1 = len(df8) - len(df9)
 print(len1)
@@ -162,6 +204,7 @@ df10 = pd.concat(df_list, ignore_index=True)
 
 # 现在 df2 包含 1000 行数据，是 df 的 10 倍
 df10 = df10.iloc[len1:]
+df10.to_excel('/home/sf107/桌面/df10.xlsx', index=False)
 # lastDate
 groupName2 = lastGroup
 for index, row in df10.iterrows():
@@ -180,6 +223,10 @@ merged = pd.merge(df_combined, df11[['日期', '星期']], left_on='值班日期
 merged = merged.drop(columns=['日期'])
 merged.to_excel('/home/sf107/桌面/值班安排表处理/值班明细表111.xlsx', index=False)
 rn2('/home/sf107/桌面/值班安排表处理/值班明细表111.xlsx', '/home/sf107/桌面/值班安排表处理/值班明细表111.xlsx', ['A'])  # ！！！！！！！
+
+
+
+
 # merged.to_excel('/home/sf107/桌面/888.xlsx', index=False)
 df7 = pd.DataFrame(columns=df6.columns)
 for index2, row2 in df5.iterrows():
