@@ -41,7 +41,6 @@ column_names = ['学历', '工资基数']
 # 将工作表的值转换为DataFrame，并指定列名
 df_salary = pd.DataFrame(ws_salary.values, columns=column_names)
 df_salary = df_salary.drop(0)
-df_salary.to_excel('/home/sf107/桌面/df_salary.xlsx', index=False)
 wb_origin2 = openpyxl.load_workbook(path + '模板/2407附件3：加班日志汇总表.xlsx')  # ！！！
 ws_origin2 = wb_origin2.active
 wb_origin3 = openpyxl.load_workbook(path + '模板/单日加班超4小时申请汇总表模板.xlsx')  # ！！！
@@ -181,7 +180,6 @@ merged_df1_2 = pd.merge(df1, df14,
 result = pd.merge(merged_df1_2, df_salary, on='学历', how='left')
 # 排序
 result = result.sort_values(by=['编号', '加班开始时间'], ascending=[True, True])
-result.to_excel('/home/sf107/桌面/result2.xlsx', index=False)
 
 # 定义一个函数，该函数接收DataFrame的行作为输入，并返回你想要添加到新列的值
 def calculate_value(row):
@@ -204,10 +202,6 @@ result = result.reset_index(drop=True)
 month1_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month1)]
 month2_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month2)]
 month3_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month3)]
-
-month1_df.to_excel('/home/sf107/桌面/1.xlsx', index=False)
-month2_df.to_excel('/home/sf107/桌面/2.xlsx', index=False)
-month3_df.to_excel('/home/sf107/桌面/3.xlsx', index=False)
 
 # 结果的表格
 columns = ['序号', '人员类别', '姓名', '="加班日期"&CHAR(10)&"附时间段"', '加班事项类型', '加班事由', '加班类型', '加班费倍率', '学历', '工资基数', '加班费基数/小时', '加班时长（小时）', '加班费金额（元）', '个人小计']
@@ -506,7 +500,6 @@ if len(df20) > 0:
 
 # *********************4.加班费申报表********************
 df40 = result
-result.to_excel('/home/sf107/桌面/result.xlsx', index=False)
 # 定义一个函数，该函数接收DataFrame的行作为输入，并返回你想要添加到新列的值
 def calculate_value(row):
     G4 = 0
@@ -522,9 +515,7 @@ def calculate_value(row):
 
 # 使用apply函数，指定axis=1以在行上应用函数
 df40['加班费金额'] = df40.apply(calculate_value, axis=1)
-df40.to_excel('/home/sf107/桌面/df40.xlsx', index=False)
 df41 = df40.groupby(['姓名', '人员类别', '加班费申报表顺序', '审批人（加班费使用）', '工资基数'])[['加班计算小时数', '加班费金额']].sum().reset_index()
-df41.to_excel('/home/sf107/桌面/df41.xlsx', index=False)
 # df41 = df40.groupby(['加班类型', '姓名', '人员类别', '加班费申报表顺序', '审批人（加班费使用）', '工资基数'])['加班计算小时数', '加班费金额'].sum().reset_index()
 df42 = df41.sort_values('加班费申报表顺序', ascending=True).reset_index()
 df42 = df42.drop(['加班费申报表顺序', "加班计算小时数", '审批人（加班费使用）'], axis=1)
@@ -532,7 +523,6 @@ df42 = df42.drop(['加班费申报表顺序', "加班计算小时数", '审批�
 
 df42 = df42.reindex(columns=['index', "人员类别", "姓名", '加班费金额'])
 df42['index'] = range(1, len(df42) + 1)
-df42.to_excel('/home/sf107/桌面/df42.xlsx', index=False)
 # num44 = -1
 # last_name = ""
 # num_list = []
