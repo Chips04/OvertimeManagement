@@ -515,7 +515,7 @@ def calculate_value(row):
 
 # 使用apply函数，指定axis=1以在行上应用函数
 df40['加班费金额'] = df40.apply(calculate_value, axis=1)
-df41 = df40.groupby(['姓名', '人员类别', '加班费申报表顺序', '审批人（加班费使用）', '工资基数'])[['加班计算小时数', '加班费金额']].sum().reset_index()
+df41 = df40.groupby(['姓名', '人员类别', '加班费申报表顺序', '审批人（加班费使用）'])[['加班计算小时数', '加班费金额']].sum().reset_index()
 # df41 = df40.groupby(['加班类型', '姓名', '人员类别', '加班费申报表顺序', '审批人（加班费使用）', '工资基数'])['加班计算小时数', '加班费金额'].sum().reset_index()
 df42 = df41.sort_values('加班费申报表顺序', ascending=True).reset_index()
 df42 = df42.drop(['加班费申报表顺序', "加班计算小时数", '审批人（加班费使用）'], axis=1)
