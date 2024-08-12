@@ -10,6 +10,7 @@ import json
 import subprocess
 import argparse
 
+print('正在处理……')
 # 读取txt文件内容
 # 读取文件内容，并手动处理可能的 UTF-8 BOM
 with open('variables.txt', 'rb') as file:  # 使用二进制模式打开文件
@@ -377,7 +378,7 @@ sheet_temp = wb_temp.active
 # 模板表格变长
 # ws_origin.insert_rows(idx=5, amount=len(dff) - 1)
 
-
+print('正在处理……加班审批表')
 # ******************************1.加班审批表************************************
 # dff = handel_df_final(4, 'F', 0)
 # # 填充数据 加班审批表
@@ -412,7 +413,7 @@ sheet_temp = wb_temp.active
 #         ws_origin[f'M{current_num}'] = f'=SUM(L{current_num}:L{current_num + count + 1})'
 #     else:
 #         count += 1
-
+print('正在处理……加班日志汇总表')
 # *********************2.加班日志汇总表********************
 # 只保留加班费的行
 df20 = df_log[df_log['报加班费还是给调休'].str.contains('加班费')].copy()
@@ -497,7 +498,7 @@ if len(df20) > 0:
 #         ws_origin3.merge_cells(f'B{current_num3}:B{current_num3 + count3 + 1}')
 #     else:
 #         count3 += 1
-
+print('正在处理……加班费申报表')
 # *********************4.加班费申报表********************
 df40 = result
 # 定义一个函数，该函数接收DataFrame的行作为输入，并返回你想要添加到新列的值
@@ -592,7 +593,7 @@ for i4 in range(len(df42)):
 #     else:
 #         count41 += 1
 
-
+print('正在处理……加班审批表分公司-新')
 # ******************************5.加班审批表分公司-新************************************
 df50 = handel_df_final(5, 'G', 3)
 
@@ -666,7 +667,7 @@ ws_origin5['M250'] = "=" + result11
 ws_origin5['N250'] = "=" + result22
 
 
-
+print('正在处理……领导画×表')
 # ******************************6.领导画×表************************************
 df60 = handel_df_final(5, 'G', 3)
 current_company6 = []
@@ -748,7 +749,7 @@ ws_origin4['D100'] = count_p
 # 实际加班人数：
 ws_origin4['D101'] = len(df60['姓名'].unique())
 
-
+print('正在处理……加班费申报表（季度）')
 # **************************7.加班费申报表（季度）*********************************
 # # 填充数据 加班费申报表（季度）
 b4 = 5
@@ -797,11 +798,16 @@ ws_origin7.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_ye
 # 将工作簿保存为 Excel 文件
 # wb_origin.save(f"{path}处理结果/原来的加班费审批表{current_month}月.xlsx")  # ！！！
 wb_origin2.save(f"{path}处理结果/{current_year}{current_month}附件3：加班日志汇总表.xlsx")  # ！！！
+print(f"生成---{current_year}{current_month}附件3：加班日志汇总表.xlsx")
 # wb_origin3.save(f"{path}处理结果/单日加班超4小时申请汇总表.xlsx")  # ！！！
 wb_origin4.save(f"{path}处理结果/{current_year}{current_month}附件1：加班费申报表.xlsx")  # ！！！
+print(f"生成---{current_year}{current_month}附件1：加班费申报表.xlsx")
 wb_origin5.save(f"{path}处理结果/{current_year}{current_month}附件2：加班费审批表 .xlsx")  # ！！！
+print(f"生成---{current_year}{current_month}附件2：加班费审批表 .xlsx")
 wb_origin6.save(f"{path}处理结果/{current_month}月领导画×表.xlsx")  # ！！！
+print(f"生成---{current_month}月领导画×表.xlsx")
 wb_origin7.save(f"{path}处理结果/附件1：加班费申报表（第{current_quarter}季度）.xlsx")  # ！！！
-
+print(f"生成---附件1：加班费申报表（第{current_quarter}季度）.xlsx")
+print('完成！')
 # subprocess.run(['python', '处理调休表.py'])
 # result = sum(i*i for i in range(0,101))

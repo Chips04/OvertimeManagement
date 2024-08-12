@@ -4,6 +4,8 @@ import os
 import fnmatch
 import numpy as np
 import json
+
+print('正在处理……')
 # 读取txt文件内容
 # with open('variables.txt', 'r', encoding='utf-8') as file:
 #     content = file.read().strip()
@@ -144,3 +146,6 @@ for iii in range(len(merged_df)):
 
 
 wb_origin8.save(f"{directory}处理结果/年假处理表.xlsx")  # ！！！
+print(f"生成---年假处理表.xlsx")
+# subprocess.run(['python', '处理年假表.py'])
+print('完成！')

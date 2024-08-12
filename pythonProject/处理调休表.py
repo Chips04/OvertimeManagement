@@ -8,6 +8,7 @@ from datetime import timedelta
 import json
 import subprocess
 
+print('正在处理……')
 # 读取txt文件内容
 # 读取文件内容，并手动处理可能的 UTF-8 BOM
 with open('variables.txt', 'rb') as file:  # 使用二进制模式打开文件
@@ -30,9 +31,24 @@ month = data['month']
 year = data['year']
 group = data['group']
 
+# 获取数据源dataframe
+df00 = pd.DataFrame()
 
-# 调休表需要导出所有日期加班和所有请休假
-df00 = pd.read_excel(path + '工作日周末法定节假日表_20240515175839.xlsx')
+pattern0 = '工作日周末法定节假日表*.xlsx'
+# 获取匹配的文件列表
+matches0 = []
+for filename0 in os.listdir(path):
+    if fnmatch.fnmatch(filename0, pattern0):
+        matches0.append(os.path.join(path, filename0))
+
+# 打开第一个匹配的文件并读取内容
+if matches0:
+    df00 = pd.read_excel(matches0[0])
+else:
+    print('No matching files found2.')
+
+# # 调休表需要导出所有日期加班和所有请休假
+# df00 = pd.read_excel(path + '工作日周末法定节假日表_20240515175839.xlsx')
 # 将DataFrame中的日期列转换为datetime格式
 df00['日期1'] = pd.to_datetime(df00['日期'])
 # 只保留工作日请假的行
@@ -189,9 +205,11 @@ df3 = df3[df3['休假类别'] == '调休']
 condition_date = df3['请假开始日期'].dt.month <= month
 # 筛选出请假开始时间在4月以前（包括4月）的行
 # 注意：这里假设leave_start_time列包含日期和时间信息
-condition_time = df3['调休开始时间（不足半天）'].dt.month <= month
+condition_time = False
+if len(df3['调休开始时间（不足半天）']) > 0:
+    condition_time = df3['调休开始时间（不足半天）'].dt.month <= month
 # 结合两个条件进行筛选
-df3 = df3[(condition_date) | (condition_time)]
+df3 = df3[condition_date | condition_time]
 
 df3 = df3.sort_values(by=['申请人员姓名', '请假开始日期', '请假开始时段'])
 df3 = df3.reset_index(drop=True)
@@ -452,6 +470,7 @@ wb_origin7.remove(wb_origin7['模板'])
 # 将工作簿保存为 Excel 文件
 
 wb_origin7.save(f"{path}处理结果/附件6：补休情况登记表-全.xlsx")  # ！！！
+print(f"生成---附件6：补休情况登记表-全.xlsx")
 wb_origin8 = openpyxl.load_workbook(path + '处理结果/附件6：补休情况登记表-全.xlsx')  # ！！！
 
 
@@ -609,6 +628,8 @@ for row in range(4, max_row - 1):  # 减 2 是因为我们要到倒数第 3 行
 # wb_origin8.save('处理后的文件路径.xlsx')
 
 wb_origin8.save(f"{path}处理结果/附件6：补休情况登记表-{month}月.xlsx")  # ！！！
+print(f"生成---附件6：补休情况登记表-{month}月.xlsx")
 wb_origin9.save(f"{path}处理结果/附件6：补休情况登记表-{month}月-大表.xlsx")  # ！！！
-
+print(f"生成---附件6：补休情况登记表-{month}月-大表.xlsx")
 # subprocess.run(['python', '处理年假表.py'])
+print('完成！')
