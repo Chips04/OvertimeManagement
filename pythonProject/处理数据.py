@@ -9,6 +9,7 @@ from openpyxl.styles import PatternFill
 import json
 import subprocess
 import argparse
+import re
 
 print('正在处理……')
 # 读取txt文件内容
@@ -54,6 +55,12 @@ wb_origin6 = openpyxl.load_workbook(path + '模板/2407附件2：加班费审批
 ws_origin6 = wb_origin6.active
 wb_origin7 = openpyxl.load_workbook(path + '模板/240729附件1：加班费申报表（第二季度）.xlsx')  # ！！！
 ws_origin7 = wb_origin7.active
+wb_origin8 = openpyxl.load_workbook(path + '模板/2408附件2：加班费发放表模板.xlsx')  # ！！！
+print(wb_origin8.worksheets)
+ws_origin81 = wb_origin8["社区加班费发放表（直聘）"]
+ws_origin82 = wb_origin8["社区加班费发放表（参聘分开做表格） "]
+ws_origin83 = wb_origin8["党务专职加班费发放表（直聘）"]
+ws_origin84 = wb_origin8["党务专职加班费发放表（参聘分开做表格） "]
 
 # 获取数据源dataframe
 df1 = pd.DataFrame()
@@ -200,6 +207,7 @@ def calculate_value(row):
 result['加班费金额'] = result.apply(calculate_value, axis=1)
 
 result = result.reset_index(drop=True)
+result.to_excel('/home/sf107/桌面/33333333333.xlsx', index=False)
 month1_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month1)]
 month2_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month2)]
 month3_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month3)]
@@ -214,7 +222,9 @@ df_final = pd.DataFrame(columns=columns)
 # begin_num_final: 数据开始行数, 加班申请表：4，超过4小时表： 3
 # letter_final: 公式列开始列数, 加班申请表：F，超过4小时表： E
 # flag: 加班审批表分公司：1 加班审批表：0 新加班审批表：3
-def handel_df_final(begin_num_final, letter_final, flag):
+def handel_df_final(begin_num_final, letter_final, flag, result=result):
+    if len(result) == 0:
+        return pd.DataFrame()
     current_company = ''
     current_num0 = 0
     result_handeled0 = result
@@ -786,6 +796,129 @@ ws_origin7['B114'] = month1_df['加班费金额'].sum()
 ws_origin7['D114'] = month2_df['加班费金额'].sum()
 ws_origin7['F114'] = month3_df['加班费金额'].sum()
 
+print('正在处理……加班费发放表')
+# ******************************8.加班费发放表************************************
+
+def replace_formula(formula):
+    # 使用正则表达式匹配并替换
+    match = re.match(r'=ROUND\((H)(\d+)\*(K)(\d+)\*(L)(\d+),2\)', formula)
+    if match:
+        new_formula = f'=ROUND(G{match.group(2)}*J{match.group(2)}*K{match.group(2)},2)'
+        return new_formula
+    else:
+        # 如果没有匹配，返回原字符串
+        return formula
+
+
+def prev_letter(letter):
+    if letter == 'A':
+        return 'Z'
+    else:
+        return chr(ord(letter) - 1)
+
+
+def handel_df(df88, ws_origin88, row_num):
+    if len(df88) == 0:
+        return pd.DataFrame()
+    df88['工资基数'] = df88['工资基数'].str.replace('I', 'H')
+    df88['加班费倍率'] = df88['加班费倍率'].str.replace('G', 'F')
+    df88['加班费基数/小时'] = df88['加班费基数/小时'].str.replace('J', 'I')
+    # 应用替换函数
+    df88['加班费金额（元）'] = df88['加班费金额（元）'].apply(replace_formula)
+    current_company8 = []
+    current_company8_list = []
+    # 个人小计在第几列（从0开始）
+    col_sum = 12
+    if df88.empty:
+        print("DataFrame is empty")
+    else:
+        # 尝试删除列
+        df88 = df88.drop(
+            columns=['data_id_x', '本次加班获得调休时长', '画×', '备注', '报加班费还是给调休', '加班事项类型'])
+        # 填充数据 加班审批表
+        current_company8 = df88.iat[0, col_sum]
+        current_company8_list = [df88.iat[0, col_sum]]
+    b8 = 5
+    num8 = 0
+    for i8 in range(len(df88)):
+        for j8 in range(len(df88.columns)):
+            cell_value8 = df88.iat[i8, j8]
+            if df88.iat[i8, col_sum] != current_company8:
+                num8 += 1
+                current_company8 = df88.iat[i8, col_sum]
+                current_company8_list.append(current_company8)
+            ws_origin88.cell(i8 + b8 + num8, j8 + 1, value=cell_value8)
+    # 啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊！
+    sum_list8 = []
+    count8 = 0
+    k82 = 0
+    sum_count8 = 5
+    letter = 'M'
+    output_letter = prev_letter(letter)
+    for k8 in range(1, len(df88) + num8 + 1):
+        # 合计那些行
+        if ws_origin88[f'A{k8 + b8}'].value is None or ws_origin88[f'A{k8 + b8}'].value == '':
+            sum_list8.append(k8 + b8)
+            ws_origin88.merge_cells(f'A{k8 + b8}:K{k8 + b8}')
+            ws_origin88[f'A{k8 + b8}'] = f'{current_company8_list[k82]}小计'
+            ws_origin88[f'{output_letter}{k8 + b8}'] = f'=SUM({output_letter}{sum_count8}:{output_letter}{k8 + b8 - 1})'
+            ws_origin88[f'{letter}{k8 + b8}'] = f'=SUM({letter}{sum_count8}:{letter}{k8 + b8 - 1})'
+            sum_count8 = k8 + b8 + 1
+            k82 += 1
+        # 正常行
+        if ws_origin88[f'C{k8 + b8}'].value != ws_origin88[f'C{k8 + b8 - 1}'].value:
+            if ws_origin88[f'C{k8 + b8 - 1 - count8}'].value is not None and ws_origin88[f'C{k8 + b8 - 1 - count8}'].value != '':
+                ws_origin88[f'{letter}{k8 + b8 - 1 - count8}'] = f'=SUM({output_letter}{k8 + b8 - 1 - count8}:{output_letter}{k8 + b8 - 1})'
+            ws_origin88.merge_cells(f'A{k8 + b8 - 1 - count8}:A{k8 + b8 - 1}')
+            ws_origin88.merge_cells(f'B{k8 + b8 - 1 - count8}:B{k8 + b8 - 1}')
+            ws_origin88.merge_cells(f'C{k8 + b8 - 1 - count8}:C{k8 + b8 - 1}')
+            ws_origin88.merge_cells(f'{letter}{k8 + b8 - 1 - count8}:{letter}{k8 + b8 - 1}')
+            count8 = 0
+        else:
+            count8 += 1
+
+    # 加班人数
+    ws_origin88['C' + row_num] = len(df88['姓名'].unique())
+    # 法定节假日总时长
+    ws_origin88['E' + row_num] = df88.loc[df88['加班类型'] == '法定节假日加班']['加班时长（小时）'].sum()
+    # 公休日总时长
+    ws_origin88['G' + row_num] = df88.loc[df88['加班类型'] == '公休日加班']['加班时长（小时）'].sum()
+    # 工作日总时长
+    ws_origin88['J' + row_num] = df88.loc[df88['加班类型'] == '工作日加班']['加班时长（小时）'].sum()
+    result81 = "+".join([f"L{num}" for num in sum_list8])
+    result82 = "+".join([f"M{num}" for num in sum_list8])
+    ws_origin88['L' + row_num] = "=" + result81
+    ws_origin88['M' + row_num] = "=" + result82
+
+
+df81 = handel_df_final(5, 'G', 3, result=result[result['类别（加班费使用）'] == '直聘'])
+df82 = handel_df_final(5, 'G', 3, result=result[result['类别（加班费使用）'].str.contains('劳务派遣')])
+df83 = handel_df_final(5, 'G', 3, result=result[result['类别（加班费使用）'] == '党务直聘'])
+df84 = handel_df_final(5, 'G', 3, result=result[result['类别（加班费使用）'] == '党务参聘'])
+
+
+handel_df(df81, ws_origin81, '200')
+handel_df(df82, ws_origin82, '200')
+handel_df(df83, ws_origin83, '9')
+handel_df(df84, ws_origin84, '9')
+
+
+# 删除空行，但最后格式会没有
+# def remove_empty_rows(ws):
+#     # 遍历行，从底部开始，避免删除时索引混乱
+#     for row in reversed(list(ws.iter_rows(min_row=1, max_col=14, max_row=ws.max_row))):
+#         # 检查当前行从A到N列是否都是空的
+#         if all(cell.value is None for cell in row):
+#             # 删除整行
+#             ws.delete_rows(row[0].row)
+#
+#
+# remove_empty_rows(ws_origin81)
+# remove_empty_rows(ws_origin82)
+# remove_empty_rows(ws_origin83)
+# remove_empty_rows(ws_origin84)
+
+
 # 表格里面的标题
 # ws_origin.cell(1, 1, value=f"民治街道上芬社区{current_year}年{current_month}月加班审批表")
 ws_origin2.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_year}年{current_month}月加班日志汇总表\n（注：已调休部分以及确认调休部分无需填报，各部门保管好相关材料留底。）")
@@ -794,6 +927,10 @@ ws_origin4.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_ye
 ws_origin5.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_year}年{current_month}月加班费审批表")
 ws_origin6.cell(1, 1, value=f"民治街道上芬社区{current_year}年{current_month}月加班费审批表")
 ws_origin7.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_year % 100}年第{current_quarter}季度加班费申报表")
+ws_origin81.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_year}年{current_month}月加班费发放表 ")
+ws_origin82.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_year}年{current_month}月加班费发放表 ")
+ws_origin83.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_year}年{current_month}月加班费发放表 ")
+ws_origin84.cell(2, 1, value=f"民治街道办事处（上芬社区）{current_year}年{current_month}月加班费发放表 ")
 
 # 将工作簿保存为 Excel 文件
 # wb_origin.save(f"{path}处理结果/原来的加班费审批表{current_month}月.xlsx")  # ！！！
@@ -808,6 +945,8 @@ wb_origin6.save(f"{path}处理结果/{current_month}月领导画×表.xlsx")  # 
 print(f"生成---{current_month}月领导画×表.xlsx")
 wb_origin7.save(f"{path}处理结果/附件1：加班费申报表（第{current_quarter}季度）.xlsx")  # ！！！
 print(f"生成---附件1：加班费申报表（第{current_quarter}季度）.xlsx")
+wb_origin8.save(f"{path}处理结果/{current_year}{current_month}附件2：加班费发放表.xlsx")  # ！！！
+print(f"生成---{current_year}{current_month}附件2：加班费发放表.xlsx")
 print('完成！')
 # subprocess.run(['python', '处理调休表.py'])
 # result = sum(i*i for i in range(0,101))
