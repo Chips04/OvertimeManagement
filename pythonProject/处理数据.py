@@ -228,8 +228,8 @@ def handel_df_final(begin_num_final, letter_final, flag, result=result):
     current_company = ''
     current_num0 = 0
     result_handeled0 = result
-    result_handeled = result
-    result_handeled['类别（加班费使用）'] = Categorical(result_handeled['类别（加班费使用）'], categories=['直聘', '劳务派遣（天域）', '劳务派遣（天悦）', '劳务派遣（翰林晟）', '未过渡', '党务', '其他'], ordered=True)
+    result_handeled = result.copy()
+    result_handeled['类别（加班费使用）'] = Categorical(result_handeled['类别（加班费使用）'], categories=['直聘', '劳务派遣（天域）', '劳务派遣（天悦）', '劳务派遣（翰林晟）', '未过渡', '党务直聘', '党务参聘', '其他'], ordered=True)
     result_handeled = result_handeled.sort_values(by=['类别（加班费使用）', '编号'])
     result_handeled = result_handeled.reset_index(drop=True)
     # 超过4小时表
