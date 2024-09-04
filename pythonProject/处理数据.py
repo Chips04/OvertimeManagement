@@ -207,7 +207,6 @@ def calculate_value(row):
 result['加班费金额'] = result.apply(calculate_value, axis=1)
 
 result = result.reset_index(drop=True)
-result.to_excel('/home/sf107/桌面/33333333333.xlsx', index=False)
 month1_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month1)]
 month2_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month2)]
 month3_df = result[(result['名单生效年月_年月'].dt.year == current_year) & (result['名单生效年月_年月'].dt.month == month3)]
