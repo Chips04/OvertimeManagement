@@ -43,7 +43,7 @@ git rm --cached pythonProject/variables.txt
 
 平台上，选择加班申请表单，权限组选择“管理全部流程2”，选中“处理上个月全部的数据”视图，在右侧筛选处添加过滤条件：所属组别 等于 综合组。点击筛选。然后导出筛选后的数据。把这个导出的文件粘到“加班表格处理”文件夹下，删除此文件夹下原来的加班申请_balabala文件。
 
-在全是py文件那里打开终端，敲下列命令执行：
+在全是py文件那里(OvertimeManagement/pythonProject/)文件夹下打开终端，敲下列命令执行：
 
 python3 处理数据.py
 
