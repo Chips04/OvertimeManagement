@@ -20,9 +20,14 @@ git config --global user.email "邮箱地址"
 
 git clone https://github.com/Chips04/OvertimeManagement.git
 
-1.加班表格处理文件夹可以剪切出来放到你喜欢的地方，如桌面
+1.加班表格处理文件夹可以粘出来放到你喜欢的地方，如桌面
 
-2.OvertimeManagement/pythonProject文件夹下有一个variables.txt文件，其中的path是你的加班表格处理文件夹所在路径，里面还有要生成的表格的年月和需要的组别，需要手动进行修改（一定要改），文本编辑器修改即可。
+2.variables.txt文件要放到OvertimeManagement/pythonProject文件夹下，其中的path是你的加班表格处理文件夹所在路径，路径最后要有一个斜杠（重要），里面还有要生成的表格的年月和需要的组别（生成调休表和年假表使用），需要手动进行修改（一定要改），文本编辑器修改即可。
+
+**撤销全部本地修改**
+
+git restore .
+（如果你修改了本地文件，拉代码时会冲突，执行此命令后再拉就不会有问题了）
 
 **拉最新代码**
 
@@ -32,7 +37,7 @@ git pull origin main
 
 git rm --cached pythonProject/variables.txt
 
-**备注**
+**处理表格**
 
 ①处理数据.py
 
@@ -42,7 +47,7 @@ git rm --cached pythonProject/variables.txt
 
 python3 处理数据.py
 
-会生成：原来的加班费审批表、加班日志汇总表、单日加班超4小时申请汇总表、加班费申报表、加班费审批表、领导画×表
+会生成：加班费申报表、加班费发放表、加班费审批表、班日志汇总表、加班费申报表（第x季度）、领导画×表
 
 ②处理调休表.py
 
