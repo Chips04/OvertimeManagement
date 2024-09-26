@@ -12,7 +12,7 @@ sudo apt update
 
 sudo apt install git
 
-新建一个文件夹放代码，在这个文件夹中执行下列命令：
+新建一个文件夹放代码，在这个文件夹中执行下列命令（用户名和邮箱地址写你自己的）：
 
 git config --global user.name "用户名"
 
