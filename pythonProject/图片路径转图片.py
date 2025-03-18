@@ -25,6 +25,7 @@ def handle_image(folder_path, file_path, image_file_col, col, output_path):
             # 获取图片文件的全路径
             image_path = os.path.join(folder_path, image_file)
             # 检查文件是否存在
+            print(image_path)
             if os.path.exists(image_path):
                 # 将图片嵌入到对应单元格中
                 img = Image(image_path)
@@ -33,14 +34,15 @@ def handle_image(folder_path, file_path, image_file_col, col, output_path):
                 ws.add_image(img, f'{col}{i + 2}')
             else:
                 print(f"图片文件 {image_file} 不存在！")
+    print(111)
     # 保存修改后的工作簿到新的Excel文件
     wb.save(output_path)
 
 
 # 执行程序
 handle_image(
-    "/home/sf107/桌面/上芬社区（包括党委、工作站、党群中心、居委会）获得荣誉汇总登记表_20240604110743/Files/佐证材料",
-    "/home/sf107/桌面/上芬社区（包括党委、工作站、党群中心、居委会）获得荣誉汇总登记表_20240604110743/上芬社区（包括党委、工作站、党群中心、居委会）获得荣誉汇总登记表_20240604110743.xlsx",
+    "/home/sf107/桌面/上芬社区（包括党委、工作站、党群中心、居委会）获得荣誉汇总登记表_20250317153044/Files/佐证材料",
+    "/home/sf107/桌面/上芬社区（包括党委、工作站、党群中心、居委会）获得荣誉汇总登记表_20250317153044/上芬社区（包括党委、工作站、党群中心、居委会）获得荣誉汇总登记表_20250317153044.xlsx",
     '佐证材料',
     'I',
     "/home/sf107/桌面/output_excel_file2.xlsx"

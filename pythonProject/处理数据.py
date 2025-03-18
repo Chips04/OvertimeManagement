@@ -734,6 +734,16 @@ for k6 in range(1, len(df60) + num6 + 1):
     else:
         count6 += 1
 
+
+def get_people_count(month):
+    # 筛选出'名单生效年月_年月'列年份为current_year且月份为month1的所有行
+    filtered_df1 = df14.loc[(df14['名单生效年月_年月'].dt.year == current_year) & (df14['名单生效年月_年月'].dt.month == month)]
+    # 进一步筛选'人员类别'列在指定列表中的行
+    filtered_rows1 = filtered_df1[filtered_df1['人员类别'].isin(['党务专职（直聘）', '党务专职（参聘）', '社区专职（直聘）', '社区专职（参聘）', '社区专职（未过渡）'])]
+    # 计算进一步筛选后的行数
+    return len(filtered_rows1)
+
+
 # 表头
 ws_origin6['O4'] = '画×'
 ws_origin6['P4'] = '报加班费还是给调休'
@@ -751,19 +761,15 @@ result11 = "+".join([f"L{num}" for num in sum_list])
 result22 = "+".join([f"M{num}" for num in sum_list])
 ws_origin6['L250'] = "=" + result11
 ws_origin6['M250'] = "=" + result22
-df_unique = df14.drop_duplicates(subset='姓名', keep='first')
-# df_unique.to_excel('/home/sf107/桌面/33333333333.xlsx', index=False)
-filtered_rows = df_unique[df_unique['人员类别'].isin(['党务专职（直聘）', '党务专职（参聘）', '社区专职（直聘）', '社区专职（参聘）', '社区专职（未过渡）'])]
-count_p = len(filtered_rows)
 # 单位聘用人员（含直聘、参聘、党务）总人数
-ws_origin4['D100'] = count_p
+ws_origin4['D100'] = get_people_count(current_month)
 # 实际加班人数：
 ws_origin4['D101'] = len(df60['姓名'].unique())
 print('正在处理……加班费申报表（按月）')
 # *********************41.加班费申报表（按月）********************
 ws_origin41['A4'] = f'{current_year}年{current_month}月'
 # 该月单位聘用人员（含直聘、参聘、党务）总人数：
-ws_origin41['C5'] = count_p
+ws_origin41['C5'] = get_people_count(current_month)
 # 该月实际加班人数：
 ws_origin41['C6'] = len(df60['姓名'].unique())
 # 该月加班费总金额（元）：
@@ -786,15 +792,6 @@ ws_origin7['D4'] = f"第{current_quarter}季度加班费\n总金额（元）"
 ws_origin7['A111'] = f"{current_year}年{month1}月"
 ws_origin7['C111'] = f"{current_year}年{month2}月"
 ws_origin7['E111'] = f"{current_year}年{month3}月"
-
-
-def get_people_count(month):
-    # 筛选出'名单生效年月_年月'列年份为current_year且月份为month1的所有行
-    filtered_df1 = df14.loc[(df14['名单生效年月_年月'].dt.year == current_year) & (df14['名单生效年月_年月'].dt.month == month)]
-    # 进一步筛选'人员类别'列在指定列表中的行
-    filtered_rows1 = filtered_df1[filtered_df1['人员类别'].isin(['党务专职（直聘）', '党务专职（参聘）', '社区专职（直聘）', '社区专职（参聘）', '社区专职（未过渡）'])]
-    # 计算进一步筛选后的行数
-    return len(filtered_rows1)
 
 
 ws_origin7['B112'] = get_people_count(month1)

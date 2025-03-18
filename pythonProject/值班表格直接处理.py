@@ -8,11 +8,12 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import numpy as np
 
-filename5 = '/home/sf107/桌面/值班安排表处理/工作日周末法定节假日表_20240823170129.xlsx'
-filename = '/home/sf107/桌面/值班安排表处理/上芬社区应急值班表9月份.xlsx'
+filename5 = '/home/sf107/桌面/值班安排表处理/工作日周末法定节假日表_20241120154529.xlsx'
+filename = '/home/sf107/桌面/值班安排表处理/上芬社区应急值班表3月份  .xlsx'
 output_name = '/home/sf107/桌面/值班安排表处理/值班安排表输出表格.xlsx'
 output_name2 = '/home/sf107/桌面/值班安排表处理/值班安排表有值班领导输出表格.xlsx'
 df = pd.read_excel(filename, skiprows=1)
+df.to_excel('/home/sf107/桌面/ddfd1.xlsx', index=False)
 df5 = pd.read_excel(filename5)
 df11 = df5.copy()
 # 只保留节假日值班的行
@@ -62,10 +63,10 @@ df['phone'] = df['值班领导'].apply(lambda x: re.search(r'\d{11}$', x).group(
 
 df.drop(columns='值班领导', inplace=True)
 df.to_excel('/home/sf107/桌面/dd.xlsx', index=False)
-df['日期/序号'] = df['日期/序号'].str.replace('00:', ' ', 1)
+df['日期'] = df['日期'].str.replace('00:', ' ', 1)
 
 # 现在将日期时间字符串转换为 datetime 对象
-df['datetime'] = pd.to_datetime(df['日期/序号'])
+df['datetime'] = pd.to_datetime(df['日期'])
 
 # 从 datetime 对象中提取月份和日
 df['值班日期'] = df['datetime'].dt.month
@@ -131,16 +132,16 @@ print('arr1', arr1)
 print('arr4', arr4)
 # df['值班组名'] = df['值班领导'] + '组'
 df['日'] = df['日'].astype(str).str.replace('\n', '')
-df['值班日期日期格式'] = pd.to_datetime('2024-' + df['月'].astype(str) + '-' + df['日'].astype(str))
+df['值班日期日期格式'] = pd.to_datetime('2025-' + df['月'].astype(str) + '-' + df['日'].astype(str))
 df['值班日期'] = df['值班日期日期格式'].dt.strftime('%Y-%m-%d')
 month = value = df.loc[0, '月']
-df = df.drop(columns=['序号', '职务', '月', '日', '日期/序号', 'datetime'])
+df = df.drop(columns=['序号', '职务', '月', '日', '日期', 'datetime'])
 df = df.sort_values(by='值班日期')
 # 使用 pd.to_numeric 将文本列转换为整数
 df['值班领导电话'] = pd.to_numeric(df['值班领导电话'])
 df2 = df.copy()
 
-
+df2.to_excel('/home/sf107/桌面/df2222222222222.xlsx', index=False)
 
 groupName = ''
 for index, row in df2.iterrows():

@@ -38,7 +38,7 @@ import datetime
 
 today = datetime.date.today()
 
-# today = datetime.date(2024, 11, 16)
+# today = datetime.date(2025, 8, 16)
 
 for i1 in range(today.month):
     # 打开现有的工作簿
@@ -75,5 +75,5 @@ for i1 in range(today.month):
             cell_value = df_final.iat[i2, j2]
             ws_origin.cell(i2 + BBB, j2 + 2, value=cell_value)
     month_value = '0' + str(i1 + 1) if i1 +1 < 10 else str(i1 + 1)
-    ws_origin.cell(1, 1, value=f"  2024年  {month_value}月  上芬社区工作站   生活垃圾产生量记录表")
-    wb_origin.save(f"/home/sf107/桌面/2生活垃圾产生量记录表/2024/生活垃圾产生量{month_value}月份记录表.xlsx")
+    ws_origin.cell(1, 1, value=f"  2025年  {month_value}月  上芬社区工作站   生活垃圾产生量记录表")
+    wb_origin.save(f"/home/sf107/桌面/2生活垃圾产生量记录表/2025/生活垃圾产生量{month_value}月份记录表.xlsx")
